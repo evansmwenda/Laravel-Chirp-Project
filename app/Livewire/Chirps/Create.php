@@ -2,16 +2,23 @@
 
 namespace App\Livewire\Chirps;
 
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class Create extends Component
 {
-    public $message;
+    #[Validate('required|string|max:255')]
+    public string $message;
 
     public function store()
     {
         //store data to db
-        dd($this->message);
+        $validated = $this->validate();
+
+        auth()->user()->chirps()->create($validated);
+
+        $this->message ="";
+        session()->flash('status','Chirp Created Successfully');
     }
 
 
